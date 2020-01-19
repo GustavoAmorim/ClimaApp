@@ -5,44 +5,53 @@ import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.climaapp.models.enums.TipoUnit;
+import com.example.climaapp.util.OpenWeatherMapUtil;
 
-public class MainRequestQueue {
+public class UserVariables {
 
-    private static MainRequestQueue ourInstance;
-
+    private static UserVariables ourInstance;
     private static Context ctx;
-    private RequestQueue requestQueue;
 
-    public static synchronized MainRequestQueue getInstance(Context context) {
+    private TipoUnit unidade;
+    private String unidadeStr;
+
+    public static synchronized UserVariables getInstance() {
 
         if (ourInstance == null) {
 
-            ourInstance = new MainRequestQueue(context);
+            ourInstance = new UserVariables();
         }
 
         return ourInstance;
     }
 
-    private MainRequestQueue(Context context) {
+    private UserVariables() {
 
-        ctx = context;
-        requestQueue = getRequestQueue();
     }
 
-    public RequestQueue getRequestQueue() {
+    public TipoUnit getTipoUnidade() {
 
-        if (requestQueue == null) {
+        return unidade;
+    }
 
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
-            requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
+    public String getTipoUnidadeStr() {
+
+        return unidadeStr;
+    }
+
+
+    public void setTipoUnidade(String unitStr) {
+
+        TipoUnit unit = TipoUnit.fromString(unitStr);
+        if (unit != null) {
+
+            this.unidade = unit;
+        } else {
+
+            this.unidade = TipoUnit.STANDARD;
         }
 
-        return requestQueue;
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-
-        getRequestQueue().add(req);
+        unidadeStr = OpenWeatherMapUtil.getStringUnit(unidade);
     }
 }

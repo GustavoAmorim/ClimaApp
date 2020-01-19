@@ -1,39 +1,30 @@
 package com.example.climaapp.models;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
-public class CoordenadaLatLon {
+import java.io.Serializable;
+
+public class Clima implements Serializable {
     
 
-    @SerializedName("lat")
-    private double latitude;
+    @SerializedName("temp")
+    private double temp;
 
-    @SerializedName("lon")
-    private double longitude;
+    @SerializedName("temp_min")
+    private double tempMin;
 
-    private LatLng coordenadaMaps;
+    @SerializedName("temp_max")
+    private double tempMax;
 
-    public LatLng getCoordenadaMaps() {
-
-        if (coordenadaMaps == null) {
-
-            if (longitude != 0 && latitude != 0) {
-
-                return new LatLng(latitude, longitude);
-            }
-
-            return null;
-        }
-
-        return coordenadaMaps;
+    public double getTemp() {
+        return temp;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getTempMin() {
+        return tempMin;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public double getTempMax() {
+        return tempMax;
     }
 }

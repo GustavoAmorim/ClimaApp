@@ -4,22 +4,34 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Cidade {
+public class OpenWeatherMapResponse {
 
-    @SerializedName("id")
-    private int id;
+    @SerializedName("cod")
+    private int codigo;
 
-    @SerializedName("name")
-    private String name;
+    @SerializedName("message")
+    private String messagem;
 
-    @SerializedName("coord")
-    private CoordenadaLatLon coordendaCidade;
+    @SerializedName("count")
+    private int countList;
 
-    @SerializedName("main")
-    private Clima climaPrincipal;
+    @SerializedName("list")
+    private List<Cidade> cidadesClima;
 
-    @SerializedName("weather")
-    private List<DescricaoClima> climaDescricao;
+    public List<Cidade> getCidadesClima() {
+
+        return cidadesClima;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public String getMessagem() {
+        return messagem;
+    }
+
+    public int getCountList() {
+        return countList;
+    }
 }
-
-"message":"accurate","cod":"200","count":15,"list"

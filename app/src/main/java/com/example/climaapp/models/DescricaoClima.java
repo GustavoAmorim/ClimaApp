@@ -1,17 +1,36 @@
 package com.example.climaapp.models;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
-public class Clima {
-    
+import java.io.Serializable;
 
-    @SerializedName("temp")
-    private double tempFahrenheit;
+public class DescricaoClima implements Serializable {
 
-    @SerializedName("temp_min")
-    private double tempMinFahrenheit;
+    @SerializedName("id")
+    private int id;
 
-    @SerializedName("temp_max")
-    private double tempMaxFahrenheit;
+    @SerializedName("main")
+    private String descPrincipal;
+
+    @SerializedName("description")
+    private String descricao;
+
+    @SerializedName("icon")
+    private String icon;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDescPrincipal() {
+        return descPrincipal;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
 }

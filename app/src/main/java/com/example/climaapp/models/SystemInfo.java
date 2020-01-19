@@ -2,27 +2,29 @@ package com.example.climaapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Clima {
+import java.io.Serializable;
+
+public class SystemInfo implements Serializable {
     
 
-    @SerializedName("temp")
-    private double temp;
+    @SerializedName("country")
+    private String pais;
 
-    @SerializedName("temp_min")
-    private double tempMin;
+    @SerializedName("sunrise")
+    private long sunriseTime;
 
-    @SerializedName("temp_max")
-    private double tempMax;
+    @SerializedName("sunset")
+    private long sunsetTime;
 
-    public double getTemp() {
-        return temp;
+    public String getPais() {
+        return pais;
     }
 
-    public double getTempMin() {
-        return tempMin;
+    public long getSunriseTime() {
+        return sunriseTime;
     }
 
-    public double getTempMax() {
-        return tempMax;
+    public long getSunsetTime() {
+        return sunsetTime;
     }
 }

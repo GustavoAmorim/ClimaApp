@@ -8,7 +8,7 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
-        <item
+        <!--item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
@@ -19,10 +19,10 @@
         <item
             android:id="@+id/nav_tools"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_tools" />
+            android:title="@string/menu_tools" /-->
     </group>
 
-    <item android:title="Communicate">
+    <!--item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -33,6 +33,6 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/menu_send" />
         </menu>
-    </item>
+    </item-->
 
 </menu>

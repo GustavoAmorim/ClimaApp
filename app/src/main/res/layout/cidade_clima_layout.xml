@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/userListItem"
+android:layout_width="match_parent"
+android:layout_height="48dp"
+android:minHeight="?attr/listPreferredItemHeight" >
+
+<ImageView
+    android:id="@+id/weatherImage"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentBottom="true"
+    />
+
+<TextView
+    android:id="@+id/cidadeTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:textStyle="bold"
+    android:layout_alignParentTop="true"
+    android:layout_toRightOf="@id/weatherImage"
+    android:textAppearance="?attr/textAppearanceListItem"/>
+
+<TextView
+    android:id="@+id/cidadeDesc"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/weatherImage"
+    android:layout_below="@id/cidadeTitle"
+    android:layout_alignStart="@id/cidadeTitle"
+    android:textAppearance="?attr/textAppearanceListItemSecondary" />
+
+</RelativeLayout>

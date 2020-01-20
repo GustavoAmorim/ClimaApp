@@ -1,0 +1,4 @@
+<resources>
+
+    <string name="in_loco_key" templateMergeStrategy="preserve" translatable="false">YOUR_APP_ID</string>
+</resources>

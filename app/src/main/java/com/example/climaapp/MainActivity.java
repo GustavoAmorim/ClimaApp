@@ -8,6 +8,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.climaapp.singletons.MainRequestQueue;
+import com.example.climaapp.singletons.UserVariables;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -19,6 +21,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.inlocomedia.android.engagement.InLocoEngagement;
+import com.inlocomedia.android.engagement.InLocoEngagementOptions;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -50,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Set initialization options
+        InLocoEngagementOptions options = InLocoEngagementOptions.getInstance(this);
+
+        /*/ The App ID you obtained in the dashboard
+        options.setApplicationId(getString(R.string.in_loco_key));
+
+        // Verbose mode; enables SDK logging, defaults to true.
+        // Remember to set to false in production builds.
+        options.setLogEnabled(true);
+
+        //Initialize the SDK
+        InLocoEngagement.init(this, options);
+        */
+
+        MainRequestQueue.getInstance(this);
+
+        UserVariables.getInstance().setTipoUnidade(getString(R.string.defaul_unit_request));
     }
 
     @Override

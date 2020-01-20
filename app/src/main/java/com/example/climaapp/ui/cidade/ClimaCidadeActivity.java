@@ -3,11 +3,9 @@ package com.example.climaapp.ui.cidade;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.climaapp.R;
 import com.example.climaapp.models.Cidade;
@@ -15,11 +13,10 @@ import com.example.climaapp.models.DescricaoClima;
 import com.example.climaapp.singletons.UserVariables;
 import com.squareup.picasso.Picasso;
 
-import java.util.Date;
-
 public class ClimaCidadeActivity extends AppCompatActivity {
 
     private static final String CITY_DETAIL_RECIVE_PORP = "cidadeSelect";
+    private static final String OPEN_WEATHER_ICON_URL = "http://openweathermap.org/img/w/";
 
     TextView cityField;
     TextView detailsField;
@@ -48,7 +45,7 @@ public class ClimaCidadeActivity extends AppCompatActivity {
 
                 weatherDetails.setText(weather.getDescricao());
 
-                iconUrl = "http://openweathermap.org/img/w/" + weather.getIcon() + ".png";
+                iconUrl = OPEN_WEATHER_ICON_URL + weather.getIcon() + ".png";
 
                 Picasso.get()
                         .load(iconUrl)

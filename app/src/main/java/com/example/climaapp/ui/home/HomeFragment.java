@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.climaapp.R;
 import com.example.climaapp.models.Cidade;
 import com.example.climaapp.models.OpenWeatherMapResponse;
-import com.example.climaapp.models.enums.TipoUnit;
 import com.example.climaapp.singletons.MainRequestQueue;
 import com.example.climaapp.singletons.UserVariables;
 import com.example.climaapp.ui.cidade.ClimaCidadeActivity;
@@ -64,6 +64,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private FloatingActionButton buscarButtonFab;
     private SupportMapFragment mapFragment;
     private ListView listPlaces;
+    private TextView listPlacesEmpty;
     private GoogleMap googleMap;
 
     private List<Cidade> cidadesClima;
@@ -75,6 +76,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private final LatLng mapDefaultLocation = new LatLng(-20.385574, -43.503578); // Ouro Preto -  MG - BR
 
     private LatLng mapLastSelectionLocation = null;
+    private Marker mapLastSelectionMarker = null;
 
     private static final String CITY_DETAIL_SEND_PORP = "cidadeSelect";
 
@@ -94,13 +96,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        UserVariables.getInstance().setTipoUnidade(getString(R.string.defaul_unit_request));
-
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        listPlacesEmpty = (TextView) root.findViewById(R.id.listPlacesEmpty);
+        listPlacesEmpty.setVisibility(View.VISIBLE);
+
         // Set up the views
         listPlaces = (ListView) root.findViewById(R.id.listPlaces);
+        listPlaces.setVisibility(View.INVISIBLE);
         mapMarkersCidadesClima = new LinkedList<Marker>();
 
         buscarButtonFab = root.findViewById(R.id.fab);
@@ -110,6 +114,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(final View view) {
 
                 if (mapLastSelectionLocation != null) {
+
+                    buscarButtonFab.setEnabled(false);
 
                     // Instantiate the RequestQueue.
                     String url ="http://api.openweathermap.org/data/2.5/find?"
@@ -130,6 +136,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 cidadesClima = getListaCidadesClima(response);
                                 fillCidadesList();
 
+                                buscarButtonFab.setEnabled(true);
+                                listPlaces.setVisibility(View.VISIBLE);
+                                listPlacesEmpty.setVisibility(View.INVISIBLE);
+
                             }
                         }, new Response.ErrorListener() {
 
@@ -139,13 +149,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 // Snackbar.make(view, getString(R.string.error_bad_location), Snackbar.LENGTH_LONG)
                                 //        .setAction("Action", null).show();
 
+                                buscarButtonFab.setEnabled(true);
                                 Toast.makeText(view.getContext(), getString(R.string.error_bad_location), Toast.LENGTH_SHORT).show();
                             }
                     });
 
                     // Add the request to the RequestQueue.
-                    MainRequestQueue.getInstance(view.getContext()).addToRequestQueue(stringRequest);
-
+                    MainRequestQueue.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest);
                 }
 
             }
@@ -173,14 +183,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
 
-
-        // String apiKey = getString(R.string.google_maps_key);
-        // Places.initialize(getActivity().getApplicationContext(), apiKey);
-
-        // Initialize the Places
-        // mapPlacesClient = Places.createClient(this.getActivity());
         mapFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-
 
         return root;
     }
@@ -339,6 +342,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         googleMap.clear();
         mapMarkersCidadesClima.clear();
+
+        mapLastSelectionMarker = null;
+        mapLastSelectionLocation = null;
+
+        listPlaces.setVisibility(View.INVISIBLE);
+
+        listPlacesEmpty.setVisibility(View.GONE);
+        listPlacesEmpty.setVisibility(View.VISIBLE);
     }
 
     private Marker addMarker(GoogleMap googleMap, LatLng mapLocation, String markerTitle, boolean searchMark, boolean removeOthers) {
@@ -352,21 +363,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 .title(markerTitle)
                 .position(mapLocation);
 
-        if (searchMark) {
-
-            buscarButtonFab.setEnabled(true);
-
-            mapLastSelectionLocation = mapLocation;
-        } else {
-
-            markOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        }
-
         Marker createdMarker = googleMap.addMarker(markOpt);
 
         if (searchMark) {
 
-            createdMarker.showInfoWindow();
+            buscarButtonFab.setEnabled(true);
+
+            changeMarkAndLocationClicked(createdMarker);
+        } else {
+
+            createdMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
         }
 
         return createdMarker;
@@ -380,9 +386,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private List<Cidade> getListaCidadesClima(String jsonObj) {
-        // Use fields to define the data types to return.
-        // List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS,
-                // Place.Field.LAT_LNG);
 
         Gson gsonParse = new Gson();
 
@@ -424,6 +427,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             mapMarkersCidadesClima.add(mark);
         }
 
+        mapMarkersCidadesClima.get(0).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mapMarkersCidadesClima.get(0).showInfoWindow();
+        mapLastSelectionMarker = mapMarkersCidadesClima.get(0);
+
         moveCameraLocation(googleMap, mapMarkersCidadesClima, DEFAULT_ZOOM_GROUP_MARKERS);
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this.getActivity(), itemDataList, R.layout.list_item_cidade_clima_layout,
@@ -442,16 +449,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private AdapterView.OnItemClickListener listClickedHandler = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView parent, View v, int position, long id) {
 
-            Marker mark = mapMarkersCidadesClima.get(position);
-            mark.showInfoWindow();
-
-            mapLastSelectionLocation = mark.getPosition();
-
-            moveCameraLocation(googleMap, mapMarkersCidadesClima, DEFAULT_ZOOM_GROUP_MARKERS);
-
             Intent climaInfo = new Intent(getActivity(), ClimaCidadeActivity.class);
             climaInfo.putExtra(CITY_DETAIL_SEND_PORP, cidadesClima.get(position));
             startActivity(climaInfo);
+
+            Marker mark = mapMarkersCidadesClima.get(position);
+            changeMarkAndLocationClicked(mark);
+
+            moveCameraLocation(googleMap, mapMarkersCidadesClima, DEFAULT_ZOOM_GROUP_MARKERS);
         }
     };
 
@@ -461,9 +466,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap.OnMarkerClickListener  markerClickedHandler = new GoogleMap.OnMarkerClickListener() {
         public boolean onMarkerClick(Marker mark) {
 
-            mapLastSelectionLocation = mark.getPosition();
+            changeMarkAndLocationClicked(mark);
 
-            mark.showInfoWindow();
             moveCameraLocation(googleMap, mapMarkersCidadesClima, DEFAULT_ZOOM_GROUP_MARKERS);
 
             int positionList = mapMarkersCidadesClima.indexOf(mark);
@@ -477,4 +481,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return false;
         }
     };
+
+    private void changeMarkAndLocationClicked(Marker mark) {
+
+        if (!mapMarkersCidadesClima.isEmpty() && mapLastSelectionMarker != null && mapMarkersCidadesClima.contains(mapLastSelectionMarker)) {
+
+            mapLastSelectionMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        }
+
+        mark.showInfoWindow();
+
+        mark.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        mapLastSelectionLocation = mark.getPosition();
+        mapLastSelectionMarker = mark;
+    }
 }

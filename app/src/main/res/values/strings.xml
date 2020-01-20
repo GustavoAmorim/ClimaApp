@@ -1,15 +1,20 @@
 <resources>
     <string name="app_name">ClimaApp</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="nav_header_title">ClimaApp</string>
     <string name="nav_header_subtitle">Gustavo Amorim</string>
+
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
     <string name="fixed_location">Usar Localização Atual</string>
     <string name="selected_location">Localização Selecionada</string>
 
     <string name="error_bad_location">Pesquisa para localização escolhida não pode ser concluída</string>
+    <string name="texto_lista_cidade_vazia">Selecione um local no mapa e utilize o botão buscar para receber condições climaticas da região aqui.</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>

@@ -93,6 +93,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private FusedLocationProviderClient mapFusedLocationProviderClient;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.d("LIFECYCLE", "OnCreate");
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -104,7 +112,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         // Set up the views
         listPlaces = (ListView) root.findViewById(R.id.listPlaces);
-        listPlaces.setVisibility(View.INVISIBLE);
         mapMarkersCidadesClima = new LinkedList<Marker>();
 
         buscarButtonFab = root.findViewById(R.id.fab);
@@ -115,7 +122,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                 if (mapLastSelectionLocation != null) {
 
-                    buscarButtonFab.setEnabled(false);
+                   // buscarButtonFab.setEnabled(false);
 
                     // Instantiate the RequestQueue.
                     String url ="http://api.openweathermap.org/data/2.5/find?"
@@ -138,7 +145,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                                 buscarButtonFab.setEnabled(true);
                                 listPlaces.setVisibility(View.VISIBLE);
-                                listPlacesEmpty.setVisibility(View.INVISIBLE);
+                                listPlacesEmpty.setVisibility(View.GONE);
 
                             }
                         }, new Response.ErrorListener() {
@@ -184,6 +191,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
 
         mapFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+        Log.d("LIFECYCLE", "OnCreateView");
 
         return root;
     }
@@ -214,30 +222,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onMapClick(LatLng point) {
 
-                String localityName = getString(R.string.selected_location);
+            String localityName = getString(R.string.selected_location);
 
-                Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
-                List<Address> addresses = null;
-                try {
-                    addresses = gcd.getFromLocation(point.latitude, point.longitude, 1);
-                } catch (IOException e) {
+            Geocoder gcd = new Geocoder(getContext(), Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = gcd.getFromLocation(point.latitude, point.longitude, 1);
+            } catch (IOException e) {
 
-                    Log.d(TAG, "Localização não encontrada com Geocoder: " + point);
-                    e.printStackTrace();
+                Log.d(TAG, "Localização não encontrada com Geocoder: " + point);
+                e.printStackTrace();
+            }
+
+            if (addresses != null && addresses.size() > 0) {
+
+                if (addresses.get(0).getSubAdminArea() != null && !addresses.get(0).getSubAdminArea().equals("")) {
+
+                    localityName = addresses.get(0).getSubAdminArea();
+                } else if (addresses.get(0).getLocality() != null && !addresses.get(0).getLocality().equals("")) {
+
+                    localityName = addresses.get(0).getLocality();
                 }
+            }
 
-                if (addresses != null && addresses.size() > 0) {
-
-                    if (addresses.get(0).getSubAdminArea() != null && !addresses.get(0).getSubAdminArea().equals("")) {
-
-                        localityName = addresses.get(0).getSubAdminArea();
-                    } else if (addresses.get(0).getLocality() != null && !addresses.get(0).getLocality().equals("")) {
-
-                        localityName = addresses.get(0).getLocality();
-                    }
-                }
-
-                addMarker(googleMap, point, localityName, true, true);
+            addMarker(googleMap, point, localityName, true, true);
             }
         });
     }
@@ -289,7 +297,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                             Log.d(TAG, "Latitude: " + mapLastKnownLocation.getLatitude());
                             Log.d(TAG, "Longitude: " + mapLastKnownLocation.getLongitude());
-
 
                             addMarkerAndMovecamera(googleMap,
                                     new LatLng(mapLastKnownLocation.getLatitude(), mapLastKnownLocation.getLongitude()),
@@ -346,9 +353,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mapLastSelectionMarker = null;
         mapLastSelectionLocation = null;
 
-        listPlaces.setVisibility(View.INVISIBLE);
-
-        listPlacesEmpty.setVisibility(View.GONE);
+        listPlaces.setVisibility(View.GONE);
         listPlacesEmpty.setVisibility(View.VISIBLE);
     }
 

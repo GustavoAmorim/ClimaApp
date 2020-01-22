@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "225992850497",
+    "firebase_url": "https://climaapp-2f742.firebaseio.com",
+    "project_id": "climaapp-2f742",
+    "storage_bucket": "climaapp-2f742.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225992850497:android:4a678f139f6f1944571ac0",
+        "android_client_info": {
+          "package_name": "com.example.climaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225992850497-9jfgmpq23rnshludao2jih27pcrkossu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.climaapp",
+            "certificate_hash": "b1aec18e3947150606b493606fae8ef8f7154510"
+          }
+        },
+        {
+          "client_id": "225992850497-s2mgptec31vuip6vtcbqbkankvu1946d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpkrdJJ1DSSdeljDstYWZLNmktGv9vmb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225992850497-s2mgptec31vuip6vtcbqbkankvu1946d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

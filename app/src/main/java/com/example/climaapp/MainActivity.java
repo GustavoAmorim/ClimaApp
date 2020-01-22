@@ -1,19 +1,10 @@
 package com.example.climaapp;
 
+import android.Manifest;
 import android.os.Bundle;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.climaapp.singletons.MainRequestQueue;
 import com.example.climaapp.singletons.UserVariables;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,8 +12,16 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import com.inlocomedia.android.core.permissions.PermissionResult;
+import com.inlocomedia.android.core.permissions.PermissionsListener;
 import com.inlocomedia.android.engagement.InLocoEngagement;
 import com.inlocomedia.android.engagement.InLocoEngagementOptions;
+import com.inlocomedia.android.engagement.request.FirebasePushProvider;
+import com.inlocomedia.android.engagement.request.PushProvider;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -31,9 +30,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    private final static String[] REQUIRED_PERMISSIONS = { Manifest.permission.ACCESS_FINE_LOCATION };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +50,43 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
+                R.id.nav_home)
+                // , R.id.nav_gallery, R.id.nav_slideshow,
+                // R.id.nav_tools, R.id.nav_share, R.id.nav_send)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        final boolean askIfDenied = true; // Will prompt the user if he has previously denied the permission
+
+        InLocoEngagement.requestPermissions(this, REQUIRED_PERMISSIONS, askIfDenied, new PermissionsListener() {
+
+            @Override
+            public void onPermissionRequestCompleted(final HashMap<String, PermissionResult> authorized) {
+                if (authorized.get(Manifest.permission.ACCESS_FINE_LOCATION).isAuthorized()) {
+                    // Permission enabled
+                }
+            }
+        });
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+
+        // Retrieve the Firebase token
+        String firebaseToken = FirebaseInstanceId.getInstance().getToken();
+
+        if (firebaseToken != null && !firebaseToken.isEmpty()) {
+            final PushProvider pushProvider = new FirebasePushProvider.Builder()
+                    .setFirebaseToken(firebaseToken)
+                    .build();
+            InLocoEngagement.setPushProvider(this, pushProvider);
+        }
+
         // Set initialization options
         InLocoEngagementOptions options = InLocoEngagementOptions.getInstance(this);
 
-        /*/ The App ID you obtained in the dashboard
+        // The App ID you obtained in the dashboard
         options.setApplicationId(getString(R.string.in_loco_key));
 
         // Verbose mode; enables SDK logging, defaults to true.
@@ -67,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Initialize the SDK
         InLocoEngagement.init(this, options);
-        */
+
 
         MainRequestQueue.getInstance(this);
 

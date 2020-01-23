@@ -20,7 +20,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
                 android:layout_margin="@dimen/fab_margin"
-                android:backgroundTint="@color/colorPrimary"
                 android:src="@android:drawable/ic_menu_search" />
         </FrameLayout>
 
@@ -31,7 +30,7 @@
             android:layout_weight="0.8"
             android:clickable="true"
             android:choiceMode="singleChoice"
-            android:visibility="gone">
+            android:visibility="gone" >
         </ListView>
 
         <TextView
@@ -42,6 +41,18 @@
             android:enabled="true"
             android:text="@string/texto_lista_cidade_vazia"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <ProgressBar
+            android:id="@+id/listPlacesProgressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:padding="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:visibility="gone"
+            android:indeterminate="true"
+            android:layout_centerHorizontal="true"
+            />
 
     </LinearLayout>
 

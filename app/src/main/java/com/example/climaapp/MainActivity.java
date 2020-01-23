@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         //Initialize the SDK
         InLocoEngagement.init(this, options);
 
-
         MainRequestQueue.getInstance(this);
 
         UserVariables.getInstance().setTipoUnidade(getString(R.string.defaul_unit_request));
@@ -114,5 +113,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onStop () {
+        super.onStop();
+
+        MainRequestQueue.getInstance(this).getRequestQueue().cancelAll("Finalizando todas requiscoes na fila!");
     }
 }

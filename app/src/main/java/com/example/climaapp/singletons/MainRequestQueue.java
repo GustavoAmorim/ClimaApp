@@ -33,10 +33,13 @@ public class MainRequestQueue {
 
         if (requestQueue == null) {
 
+            // Start the queue
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
+
+        requestQueue.start();
 
         return requestQueue;
     }

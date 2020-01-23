@@ -389,7 +389,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         removeMarkers();
 
-        LinkedList<Map<String,Object>> itemDataList = criaMapaListItens();
+        List<Map<String,Object>> itemDataList = criaMapaListItens();
 
         // seleciona primeira cidade da requisicao
         mapMarkersCidadesClima.get(0).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -412,7 +412,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
      *
      * Cria mapa de itens no padrao para uso de simple adapter para preencher list de cidades.
      */
-    private LinkedList<Map<String, Object>> criaMapaListItens() {
+    private List<Map<String, Object>> criaMapaListItens() {
 
         LinkedList<Map<String,Object>> itemDataList = new LinkedList<Map<String,Object>>();
         for(Cidade cidade: cidadesClima) {
@@ -553,8 +553,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
             if (task.isSuccessful()) {
 
-                // Save last known position
-                mapLastKnownLocation = task.getResult();
+            // Save last known position
+            mapLastKnownLocation = task.getResult();
+
+            if (mapLastKnownLocation instanceof Location) {
 
                 Log.d(TAG, "Latitude: " + mapLastKnownLocation.getLatitude());
                 Log.d(TAG, "Longitude: " + mapLastKnownLocation.getLongitude());
@@ -566,6 +568,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         true,
                         true,
                         true);
+
+                } else {
+
+                    addMarkerDefaultLocation(googleMap);
+                }
             } else {
                 Log.d(TAG, "Current location is null. Using defaults.");
                 Log.e(TAG, "Exception: %s", task.getException());

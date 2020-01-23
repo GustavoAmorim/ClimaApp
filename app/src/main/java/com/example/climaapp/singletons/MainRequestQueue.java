@@ -39,8 +39,6 @@ public class MainRequestQueue {
             requestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
         }
 
-        requestQueue.start();
-
         return requestQueue;
     }
 
